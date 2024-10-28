@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+//Todo:------------ Models -------------
+
+model Admin {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+}
+
+model Category {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  is_hero_section Boolean  @default(false)
+  movies          Movie[]  
+}
+
+model Movie {
+  id                Int        @id @default(autoincrement())
+  poster            String
+  hero_section_image String
+  name              String     @unique
+  description       String
+  director          String
+  genre             String
+  release_date      DateTime
+  language          String
+  imdb_rating       Float
+  trailer_link      String
+  category_id       Int
+  category          Category   @relation(fields: [category_id], references: [id])
+  showtimes         Showtime[] 
+  bookings          Booked[]   
+}
+
+model Showtime {
+  id         Int      @id @default(autoincrement())
+  movie_id   Int
+  time       DateTime
+  date       DateTime
+  movie      Movie    @relation(fields: [movie_id], references: [id])
+  bookings   Booked[] 
+}
+
+model Booked {
+  id         Int      @id @default(autoincrement())
+  username   String
+  email      String
+  movie_id   Int
+  showtime_id Int
+  movie      Movie    @relation(fields: [movie_id], references: [id])
+  showtime   Showtime @relation(fields: [showtime_id], references: [id])
+}
