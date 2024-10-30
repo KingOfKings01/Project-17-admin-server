@@ -43,8 +43,7 @@ model Movie {
 model Showtime {
   id         Int      @id @default(autoincrement())
   movieId   Int
-  time       DateTime
-  date       DateTime
+  dateTime       DateTime
   movie      Movie    @relation(fields: [movieId], references: [id])
   bookings   Booked[] 
 } 

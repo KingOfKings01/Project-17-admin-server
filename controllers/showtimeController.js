@@ -15,16 +15,20 @@ const getAllShowtimes = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// Create a new showtime
 const createShowtime = async (req, res) => {
   try {
-    const { movie_id, time, date } = req.body;
-    const showtime = await showtime.create({
-      data: { movie_id, time, date },
+    const { movieId, dateTime } = req.body;
+    const parsedDateTime = new Date(dateTime); // Ensures it's a proper Date object
+
+    const newShowtime = await showtime.create({
+      data: {
+        movieId: parseInt(movieId, 10),
+        dateTime: parsedDateTime,
+      },
     });
-    res.status(201).json(showtime);
+    res.status(201).json(newShowtime);
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({ error: error.message });
   }
 };
