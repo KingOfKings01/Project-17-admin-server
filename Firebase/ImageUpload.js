@@ -18,13 +18,8 @@ async function handleImageUpload(filePath, fileName) {
     if (filePath) {
       const uploadTask = await uploadBytesResumable(storageRef, fileBuffer, { contentType: 'image/png' });
       
-      
       // Get the download URL after the upload completes
-      
       const downloadURL = await getDownloadURL(uploadTask.ref);
-      console.log();
-      console.log(downloadURL); // this is undefine
-      console.log();
       return downloadURL;
     }
 
