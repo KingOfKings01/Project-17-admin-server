@@ -9,15 +9,20 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS)
 const createAdmin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const hashedPassword = bcrypt.hash(password, SALT_ROUNDS);
-    const admin = await admin.create({
+    console.log(SALT_ROUNDS, email, password);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    console.log(hashedPassword);
+    const adminUser = await admin.create({
       data: {
         email,
         password: hashedPassword,
       },
     });
-    res.status(201).json(admin);
+
+    const token = jwt.sign({ id: adminUser.id, email: adminUser.email }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    res.json({ token });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -26,21 +31,22 @@ const createAdmin = async (req, res) => {
 const authenticateAdmin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const admin = await admin.findUnique({ where: { email } });
+    const adminUser = await admin.findUnique({ where: { email } });
 
-    if (!admin) {
+    if (!adminUser) {
       return res.status(401).json({ message: 'Admin user is not exist!' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    const isPasswordValid = await bcrypt.compare(password, adminUser.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid or password!' });
     }
 
-    const token = jwt.sign({ id: admin.id, email: admin.email }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ id: adminUser.id, email: adminUser.email }, process.env.JWT_SECRET, { expiresIn: '24h' });
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

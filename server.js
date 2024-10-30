@@ -1,6 +1,7 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const cors = require("cors");
 
 const categoryRoutes = require("./routes/categoryRoutes");
 const movieRoutes = require("./routes/movieRoutes");
@@ -10,7 +11,9 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
+app.use(cors())
 
 // Routes
 app.use("/admin", adminRoutes);
@@ -26,6 +29,7 @@ app.get("/", (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

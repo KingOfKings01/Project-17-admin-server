@@ -2,15 +2,24 @@ const { PrismaClient } = require("@prisma/client");
 const { handleImageUpload } = require("../Firebase/ImageUpload");
 const { movie } = new PrismaClient();
 
-// Get all movies
+
 const getAllMovies = async (req, res) => {
   try {
-    const movies = await movie.findMany();
+    const movies = await movie.findMany({
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
     res.json(movies);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Create a new movie
 const createMovie = async (req, res) => {
@@ -21,40 +30,44 @@ const createMovie = async (req, res) => {
       description,
       director,
       genre,
-      release_date,
+      releaseDate,
       language,
-      imdb_rating,
-      trailer_link,
-      category_id,
+      imdbRating,
+      trailerLink,
+      categoryId,
     } = req.body;
 
-    const imageUrl = await handleImageUpload(
-      req.file.path,
-      req.file.originalname
-    );
-
-    // console.log(movie);
+      imageUrl = await handleImageUpload(
+        req.file.path,
+        req.file.originalname
+      )     
 
     const newMovie = await movie.create({
       data: {
         poster,
-        hero_section_image: imageUrl,
+        heroSectionImage: imageUrl,
         name,
         description,
         director,
         genre,
-        release_date: new Date(release_date),
+        releaseDate: new Date(releaseDate),
         language,
-        imdb_rating: parseFloat(imdb_rating),
-        trailer_link,
-        category_id: +category_id,
+        imdb_rating: parseFloat(imdbRating),
+        trailerLink,
+        categoryId: +categoryId,
       },
     });
+
     res.status(201).json(newMovie);
   } catch (error) {
+    console.log("--------------------------------");
+    console.error(error.message);
+    console.log("--------------------------------");
+
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Update a movie
 const updateMovie = async (req, res) => {
@@ -62,17 +75,18 @@ const updateMovie = async (req, res) => {
     const { id } = req.params;
     const {
       poster,
-      hero_section_image,
+      heroSectionImage,
       name,
       description,
       director,
       genre,
-      release_date,
+      releaseDate,
       language,
       imdb_rating,
-      trailer_link,
-      category_id,
+      trailerLink,
+      categoryId,
     } = req.body;
+
     const movie = await movie.update({
       where: { id: parseInt(id, 10) },
       data: {

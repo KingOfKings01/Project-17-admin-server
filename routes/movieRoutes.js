@@ -12,7 +12,7 @@ const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 
 router.get("/", authorization, getAllMovies);
-router.post("/", upload.single('image'), createMovie);
+router.post("/",authorization, upload.single('heroSectionImage'), createMovie);
 router.put("/:id", authorization, updateMovie);
 router.delete("/:id", authorization, deleteMovie);
 

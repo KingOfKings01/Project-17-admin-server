@@ -11,14 +11,29 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+// Get categories with movies
+const getCategoriesWithMovies = async (req, res) => {
+  try {
+    const categoriesWithMovies = await category.findMany({
+      include: {
+        movies: true,
+      },
+    });
+    res.status(200).json(categoriesWithMovies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch categories with movies' });
+  }
+};
+
 // Create a new category
 const createCategory = async (req, res) => {
   try {
     const { name, is_hero_section } = req.body;
-    const category = await category.create({
+    const newCategory = await category.create({
       data: { name, is_hero_section },
     });
-    res.status(201).json(category);
+    res.status(201).json(newCategory);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -28,13 +43,16 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, is_hero_section } = req.body;
-    const category = await category.update({
+    console.log(id);
+    
+    const data = req.body;
+    const updatedCategory = await category.update({
       where: { id: parseInt(id, 10) },
-      data: { name, is_hero_section },
+      data,
     });
-    res.status(200).json(category);
+    res.status(200).json(updatedCategory);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -54,6 +72,7 @@ const deleteCategory = async (req, res) => {
 
 module.exports = {
   getAllCategories,
+  getCategoriesWithMovies,
   createCategory,
   updateCategory,
   deleteCategory,

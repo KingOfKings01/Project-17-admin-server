@@ -18,43 +18,43 @@ model Admin {
 model Category {
   id              Int      @id @default(autoincrement())
   name            String   @unique
-  is_hero_section Boolean  @default(false)
+  isHeroSection Boolean  @default(false)
   movies          Movie[]  
 }
 
 model Movie {
   id                Int        @id @default(autoincrement())
   poster            String
-  hero_section_image String
+  heroSectionImage String
   name              String     @unique
   description       String
   director          String
   genre             String
-  release_date      DateTime
+  releaseDate      DateTime
   language          String
-  imdb_rating       Float
-  trailer_link      String
-  category_id       Int
-  category          Category   @relation(fields: [category_id], references: [id])
+  imdbRating       Float
+  trailerLink      String
+  categoryId       Int
+  category          Category   @relation(fields: [categoryId], references: [id])
   showtimes         Showtime[] 
   bookings          Booked[]   
 }
 
 model Showtime {
   id         Int      @id @default(autoincrement())
-  movie_id   Int
+  movieId   Int
   time       DateTime
   date       DateTime
-  movie      Movie    @relation(fields: [movie_id], references: [id])
+  movie      Movie    @relation(fields: [movieId], references: [id])
   bookings   Booked[] 
-}
+} 
 
 model Booked {
   id         Int      @id @default(autoincrement())
   username   String
   email      String
-  movie_id   Int
-  showtime_id Int
-  movie      Movie    @relation(fields: [movie_id], references: [id])
-  showtime   Showtime @relation(fields: [showtime_id], references: [id])
+  movieId   Int
+  showtimeId Int
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  showtime   Showtime @relation(fields: [showtimeId], references: [id])
 }

@@ -1,12 +1,17 @@
-const { PrismaClient } = require('@prisma/client');
-const {showtime} = new PrismaClient();
+const { PrismaClient } = require("@prisma/client");
+const { showtime } = new PrismaClient();
 
 // Get all showtimes
 const getAllShowtimes = async (req, res) => {
   try {
-    const showtimes = await showtime.findMany();
+    const showtimes = await showtime.findMany({
+      include: {
+        movie: true,
+      },
+    });
     res.json(showtimes);
   } catch (error) {
+    console.error(error.message)
     res.status(500).json({ error: error.message });
   }
 };

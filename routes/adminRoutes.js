@@ -6,7 +6,7 @@ const {
 
 const router = express.Router();
 
-router.post('/sing-in', createAdmin);
+router.post('/sign-in', createAdmin);
 router.post('/login', authenticateAdmin);
 
 module.exports = router;
