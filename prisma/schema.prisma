@@ -52,6 +52,7 @@ model Booked {
   id         Int      @id @default(autoincrement())
   username   String
   email      String
+  isValid    Boolean  @default(false)
   movieId   Int
   showtimeId Int
   movie      Movie    @relation(fields: [movieId], references: [id])

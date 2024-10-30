@@ -52,7 +52,7 @@ const createMovie = async (req, res) => {
         genre,
         releaseDate: new Date(releaseDate),
         language,
-        imdb_rating: parseFloat(imdbRating),
+        imdbRating: parseFloat(imdbRating),
         trailerLink,
         categoryId: +categoryId,
       },
