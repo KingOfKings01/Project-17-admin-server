@@ -37,7 +37,7 @@ const createMovie = async (req, res) => {
       categoryId,
     } = req.body;
 
-      imageUrl = await handleImageUpload(
+      const imageUrl = await handleImageUpload(
         req.file.path,
         req.file.originalname
       )     
@@ -60,10 +60,7 @@ const createMovie = async (req, res) => {
 
     res.status(201).json(newMovie);
   } catch (error) {
-    console.log("--------------------------------");
     console.error(error.message);
-    console.log("--------------------------------");
-
     res.status(500).json({ error: error.message });
   }
 };
@@ -75,36 +72,48 @@ const updateMovie = async (req, res) => {
     const { id } = req.params;
     const {
       poster,
-      heroSectionImage,
       name,
       description,
       director,
       genre,
       releaseDate,
+      heroSectionImage,
       language,
-      imdb_rating,
+      imdbRating,
       trailerLink,
       categoryId,
     } = req.body;
 
-    const movie = await movie.update({
+    
+    let imageUrl = heroSectionImage
+    if(req.file){
+      imageUrl = await handleImageUpload(
+        req.file.path,
+        req.file.originalname
+      )     
+    }
+    
+    
+    const updatedMovie = await movie.update({
       where: { id: parseInt(id, 10) },
       data: {
         poster,
-        hero_section_image,
+        heroSectionImage: imageUrl,
         name,
         description,
         director,
         genre,
-        release_date,
+        releaseDate: new Date(releaseDate),
         language,
-        imdb_rating,
-        trailer_link,
-        category_id,
+        imdbRating: parseFloat(imdbRating),
+        trailerLink,
+        categoryId: +categoryId,
       },
     });
-    res.status(200).json(movie);
+
+    res.status(200).json(updatedMovie);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -118,9 +127,14 @@ const deleteMovie = async (req, res) => {
     });
     res.status(204).send();
   } catch (error) {
+    if (error.code === 'P2003') {  // Prisma specific error code for foreign key constraint violation
+      return res.status(400).json({ error: 'Cannot delete movie because it is associated with showtimes.' });
+    }
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = {
   getAllMovies,

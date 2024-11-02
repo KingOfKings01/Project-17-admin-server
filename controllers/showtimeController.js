@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const { showtime } = new PrismaClient();
+const { showtime, movie } = new PrismaClient();
 
 // Get all showtimes
 const getAllShowtimes = async (req, res) => {
@@ -26,7 +26,14 @@ const createShowtime = async (req, res) => {
         dateTime: parsedDateTime,
       },
     });
-    res.status(201).json(newShowtime);
+
+    // Fetch the movie details
+    const foundMovie = await movie.findUnique({
+      where: { id: parseInt(movieId, 10) },
+      select: { name: true }, // Only get the movie name
+    });
+
+    res.status(201).json({ ...newShowtime, movie: foundMovie });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: error.message });

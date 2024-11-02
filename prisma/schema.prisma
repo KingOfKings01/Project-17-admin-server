@@ -10,52 +10,52 @@ generator client {
 //Todo:------------ Models -------------
 
 model Admin {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
+  id       Int    @id @default(autoincrement())
+  email    String @unique
   password String
 }
 
 model Category {
-  id              Int      @id @default(autoincrement())
-  name            String   @unique
-  isHeroSection Boolean  @default(false)
-  movies          Movie[]  
+  id            Int     @id @default(autoincrement())
+  name          String  @unique
+  isHeroSection Boolean @default(false)
+  movies        Movie[]
 }
 
 model Movie {
-  id                Int        @id @default(autoincrement())
-  poster            String
+  id               Int        @id @default(autoincrement())
+  poster           String
   heroSectionImage String
-  name              String     @unique
-  description       String
-  director          String
-  genre             String
+  name             String     @unique
+  description      String
+  director         String
+  genre            String
   releaseDate      DateTime
-  language          String
+  language         String
   imdbRating       Float
   trailerLink      String
   categoryId       Int
-  category          Category   @relation(fields: [categoryId], references: [id])
-  showtimes         Showtime[] 
-  bookings          Booked[]   
+  category         Category   @relation(fields: [categoryId], references: [id])
+  showtimes        Showtime[]
+  bookings         Booked[]
 }
 
 model Showtime {
-  id         Int      @id @default(autoincrement())
-  movieId   Int
-  dateTime       DateTime
-  movie      Movie    @relation(fields: [movieId], references: [id])
-  bookings   Booked[] 
-} 
+  id       Int      @id @default(autoincrement())
+  movieId  Int
+  dateTime DateTime
+  movie    Movie    @relation(fields: [movieId], references: [id])
+  bookings Booked[]
+}
 
 model Booked {
-  id         Int      @id @default(autoincrement())
-  username   String
-  email      String
+  id          Int      @id @default(autoincrement())
+  username    String
+  email       String
   phoneNumber String
-  isValid    Boolean  @default(false)
-  movieId   Int
-  showtimeId Int
-  movie      Movie    @relation(fields: [movieId], references: [id])
-  showtime   Showtime @relation(fields: [showtimeId], references: [id])
+  isValid     Boolean  @default(false)
+  movieId     Int
+  showtimeId  Int
+  movie       Movie    @relation(fields: [movieId], references: [id])
+  showtime    Showtime @relation(fields: [showtimeId], references: [id])
 }

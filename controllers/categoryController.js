@@ -43,7 +43,6 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     
     const data = req.body;
     const updatedCategory = await category.update({

@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", authorization, getAllMovies);
 router.post("/",authorization, upload.single('heroSectionImage'), createMovie);
-router.put("/:id", authorization, updateMovie);
+router.patch("/:id", authorization, upload.single('heroSectionImage'), updateMovie);
 router.delete("/:id", authorization, deleteMovie);
 
 module.exports = router;
